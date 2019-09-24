@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
+'use strict';
+
 const store = {
   items: [
-    { id: cuid(), name: 'apples', checked: false },
-    { id: cuid(), name: 'oranges', checked: false },
-    { id: cuid(), name: 'milk', checked: true },
-    { id: cuid(), name: 'bread', checked: false }
+    { id: cuid(), name: 'apples', checked: false},
+    { id: cuid(), name: 'oranges', checked: false},
+    { id: cuid(), name: 'milk', checked: true},
+    { id: cuid(), name: 'bread', checked: false}
   ],
   hideCheckedItems: false
 };
@@ -26,6 +29,10 @@ const generateItemElement = function (item) {
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
         </button>
+        <form class='js-item-edit'>
+        <input type="text" name="shopping-item-edit" class="shopping-item-edit js-shopping-item-edit" placeholder="enter new item name">
+        <button type="submit">Edit item</button>
+        </form>
       </div>
     </li>`;
 };
@@ -127,6 +134,24 @@ const handleDeleteItemClicked = function () {
   });
 };
 
+const rename = function(id, newName) {
+  let currentItem = store.items.find(item => item.id === id);
+  currentItem.name = newName;
+  console.log(currentItem);
+};
+
+
+const handleNewItemName = function () {
+  $('.js-shopping-list').on('submit', '.js-item-edit', event => {
+    event.preventDefault();
+    const newName = $(event.currentTarget).children('input').val();
+    $(event.currentTarget).children('input').val('');
+    const id = getItemIdFromElement(event.currentTarget);
+    rename(id, newName);
+    render();
+  });
+};
+
 /**
  * Toggles the store.hideCheckedItems property
  */
@@ -145,6 +170,8 @@ const handleToggleFilterClick = function () {
   });
 };
 
+
+
 /**
  * This function will be our callback when the
  * page loads. It is responsible for initially 
@@ -159,6 +186,7 @@ const handleShoppingList = function () {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  handleNewItemName();
   handleToggleFilterClick();
 };
 
